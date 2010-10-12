@@ -91,11 +91,11 @@ sakai.config = {
         SEARCH_MY_FILES: "/var/search/files/myfiles.json",
         SEARCH_MY_SITES: "/var/search/files/mysites.json",
         SEARCH_GROUP_MEMBERS: "/var/search/groupmembers.json",
-        SEARCH_GROUPS: "/var/search/groups.json",
+        SEARCH_GROUPS: "/var/search/groups.infinity.json",
         SEARCH_PAGES: "/var/search/page.json",
         SEARCH_SITES: "/var/search/sites.json",
-        SEARCH_USERS_ACCEPTED: "/var/contacts/find.json",
-        SEARCH_USERS: "/var/search/users.json",
+        SEARCH_USERS_ACCEPTED: "/var/contacts/find.infinity.json",
+        SEARCH_USERS: "/var/search/users.infinity.json",
         SEARCH_USERS_GROUPS: "/var/search/usersgroups.json",
         SITE_ADD_MEMBERS_SERVICE: "/_rest/site/members/add/__SITE__",
         SITE_CONFIGFOLDER: "/sites/__SITEID__",
@@ -172,6 +172,25 @@ sakai.config = {
         }
     },
 
+    Domain: {
+        /*
+         * These domain labels can be used anywhere on the site (i.e in the video
+         * widget) to convert common domains into shorter, more readable labels
+         * for display purposes.
+         */
+        Labels: {
+            "youtube.com": "YouTube",
+            "www.youtube.com": "YouTube",
+            "youtube.co.uk": "YouTube",
+            "www.youtube.co.uk": "YouTube",
+            "vimeo.com": "Vimeo",
+            "www.vimeo.com": "Vimeo",
+            "vimeo.co.uk": "Vimeo",
+            "www.vimeo.co.uk": "Vimeo",
+            "video.google.com": "Google Video"
+        }
+    },
+
     Search: {
         MAX_CORRECT_SEARCH_RESULT_COUNT: 100
     },
@@ -199,7 +218,9 @@ sakai.config = {
             }
         }
     },
-
+    
+    allowPasswordChange: true,
+    
     Profile: {
         /*
          * This is a collection of profile configuration functions and settings
@@ -443,7 +464,7 @@ sakai.config = {
          * Relationships used by the add contacts widget to define what relationship the contacts can have
          */
         "contacts": [
-            {"name": "Classmate", "definition": "is my classmate", "selected": false},
+            {"name": "Classmate", "definition": "is my classmate", "selected": true},
             {"name": "Supervisor", "inverse": "Supervised", "definition": "is my supervisor", "selected": false},
             {"name": "Supervised", "inverse": "Supervisor", "definition": "is being supervised by me", "selected": false},
             {"name": "Lecturer", "inverse": "Student", "definition": "is my lecturer", "selected": false},
