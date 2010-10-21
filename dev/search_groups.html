@@ -21,7 +21,7 @@
         <link rel="stylesheet" type="text/css" href="/dev/_css/lib/jquery.autoSuggest.css" />
 
         <!-- NYU Skin CSS-->
-        <link rel="stylesheet" type="text/css" href="_skins/nyu/nyu.skin.css" />
+        <link rel="stylesheet" type="text/css" href="/dev/_skins/nyu/nyu.skin.css" />
 
         <!-- Sakai Config JS -->
         <script type="text/javascript" src="_configuration/widgets.js"></script>
@@ -88,11 +88,11 @@
 
                         <!-- SEARCH BAR -->
                         <div class="fl-left fl-container fl-fix search_bar">
-                            <button class="s3d-button s3d-button-primary search_add_group_button"><span class="s3d-button-inner">__MSG__CREATE_A_GROUP__</span></button>
                             <span id="search_form">
                                 <input maxlength="255" type="text" id="search_text" class="input" value="__MSG__ENTER_A_SEARCHTERM__" title="__MSG__ENTER_A_SEARCHTERM__" />
                                 <button id="search_button" class="s3d-search-button s3d-button s3d-button-primary"><span class="s3d-button-inner"><span class="s3d-button-icon-right">__MSG__SEARCH__</span></span></button>
                             </span>
+                            <button class="s3d-button s3d-button-primary search_add_group_button"><span class="s3d-button-inner">__MSG__CREATE_A_GROUP__</span></button>
                         </div>
                         
                         <!-- TEMPORARY SEARCH TEXT -->
@@ -129,12 +129,7 @@
                                 {for i in items}
                                     {if i['sakai:group-id']}
                                     {var groupsFound = true}
-                                    <div class="fl-container fl-fix search_result">
-                                        {if i.picture}
-                                        <img src="${i.picture.picPath}" alt="group name">
-                                        {else}
-                                        <img src="/dev/_images/group_avatar_icon_64x64_nob.png" alt="group name">
-                                        {/if}
+                                    <div class="fl-container fl-fix search_result_course_site">
                                         <div class="search_result_course_site_title"><a href="/~${i.pagepath}">${sakai.api.Util.shortenString(i["sakai:group-title"], 75)}</a></div>
                                         <div class="search_result_course_site_url"><a href="/~${i.pagepath}">${sakai.api.Util.shortenString(i.pagepath, 75)}</a></div>
                                         <div class="search_result_course_site_excerpt">${sakai.api.Util.shortenString(i["sakai:group-description"], 300)}</div>
