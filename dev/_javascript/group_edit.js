@@ -124,12 +124,12 @@ sakai.groupedit = function(){
             },
             error: function(xhr, textStatus, thrownError){
 
-	            if (xhr.status === 401 || xhr.status === 403){
+                if (xhr.status === 401 || xhr.status === 403){
                     sakai.api.Security.send403();
                 } else {
                     sakai.api.Security.send404();
                 }
-                
+
             }
         });
     };
@@ -152,7 +152,7 @@ sakai.groupedit = function(){
         // enable group basic info input elements
         sakai.api.UI.groupbasicinfo.enableInputElements();
         // Show a notification on the screen
-    	sakai.api.Util.notification.show("Group Basic Information", "Updated successfully.");
+        sakai.api.Util.notification.show("Group Basic Information", "Updated successfully.");
         // Re-render the Entity Summary widget so the changes are reflected
         sakai.api.UI.entity.render("group", sakai.currentgroup.data);
     });
@@ -342,19 +342,19 @@ sakai.groupedit = function(){
                 },
                 success: function(data){
                     if (userCount > 1) {
-                        renderItemLists(listType);
                         sakai.api.Util.notification.show(sakai.api.Security.saneHTML($("#group_edit_group_membership_text").text()), sakai.api.Security.saneHTML($("#group_edit_users_added_text").text()));
                     } else if (userCount == 1) {
-                        renderItemLists(listType);
                         sakai.api.Util.notification.show(sakai.api.Security.saneHTML($("#group_edit_group_membership_text").text()), sakai.api.Security.saneHTML($("#group_edit_user_added_text").text()));
                     }
+                    renderItemLists('members');
+                    renderItemLists('managers');
                     $("#entity_member_count").text(sakai.api.Security.saneHTML(parseInt($("#entity_member_count").text(), 10) + userCount));
                     $("#group_editing_add_" + listType).focus()
                 }
             });
         }
     };
-    
+
     /**
      * Add users
      * Function that gets the list of selected users from the people picker widget and adds them to the group
@@ -430,7 +430,7 @@ sakai.groupedit = function(){
      * @param {Array} peopleList The list of people to filter against
      * @return {Array} The filtered list of people
      */
-    var filterUsers = function(peopleList) {
+    var filterUsers = function(peopleList, accessType) {
         var peopleToAdd = [];
         $(peopleList).each(function(i,val) {
             var reason = "";
@@ -440,7 +440,7 @@ sakai.groupedit = function(){
                 }
             }
             for (var k in sakai.data.listpeople["members"]["userList"]) {
-                if (sakai.data.listpeople["members"]["userList"].hasOwnProperty(k) && k === val) {
+                if (sakai.data.listpeople["members"]["userList"].hasOwnProperty(k) && k === val && accessType !== 'managers') {
                     reason = "member";
                 }
             }
@@ -477,6 +477,21 @@ sakai.groupedit = function(){
         for (var k in sakai.data.listpeople["members"]["userList"]) {
             if (sakai.data.listpeople["members"]["userList"].hasOwnProperty(k)) {
                 list.push(k);
+            }
+        }
+        return list;
+    };
+
+    /**
+     * Retrieve the managers lists
+     *
+     * @return {Array} the list of managers
+     */
+    var getManagers = function() {
+        var list = [];
+        for (var j in sakai.data.listpeople["managers"]["userList"]) {
+            if (sakai.data.listpeople["managers"]["userList"].hasOwnProperty(j)) {
+                list.push(j);
             }
         }
         return list;
@@ -548,7 +563,7 @@ sakai.groupedit = function(){
                 });
                 $(window).unbind("sakai-pickeruser-finished");
                 $(window).bind("sakai-pickeruser-finished", function(e, peopleList) {
-                    var peopleToAdd = filterUsers(peopleList.toAdd);
+                    var peopleToAdd = filterUsers(peopleList.toAdd, 'members');
                     addUsers('members', peopleToAdd);
                 });
             });
@@ -557,19 +572,19 @@ sakai.groupedit = function(){
             $("#group_editing_add_managers").bind("click", function(){
                 pl_config.type = "people";
                 pl_config.what = "Managers";
-                pl_config.excludeList = getMembersAndManagers();
+                pl_config.excludeList = getManagers();
                 $(window).trigger("sakai-pickeruser-init", pl_config, function(people) {
                 });
                 $(window).unbind("sakai-pickeruser-finished");
                 $(window).bind("sakai-pickeruser-finished", function(e, peopleList) {
-                    var peopleToAdd = filterUsers(peopleList.toAdd);
+                    var peopleToAdd = filterUsers(peopleList.toAdd, 'managers');
                     addUsers('managers', peopleToAdd);
                 });
             });
 
             // Bind the add content button
             $("#group_editing_add_content").bind("click", function(){
-                $(window).trigger('sakai-embedcontent-init', {"name":"Item", "mode": "picker", "limit": false, "filter": false});
+                $(window).trigger('sakai-embedcontent-init', {"name":sakai.currentgroup.data.authprofile["sakai:group-title"], "mode": "picker", "limit": false, "filter": false});
                 $(window).unbind("sakai-embedcontent-picker-finished");
                 $(window).bind("sakai-embedcontent-picker-finished", function(e, fileList) {
                     if (fileList.items.length) {
@@ -601,10 +616,10 @@ sakai.groupedit = function(){
             }
             addBinding();
         } else {
-            
+
             // The user is not a manager of the group
             sakai.api.Security.send403();
-            
+
         }
     };
 
